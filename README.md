@@ -18,26 +18,6 @@ const { rates } = require('fx-nbp');
   await rates.getRatesBetweenDates('RUB', ['2019-02-13', '2019-06-22']) // (89) [...]
 });
 ```
-# Notes on the NBP API
-
-The National Bank of Poland publishes three types of exchange rate tables:
-- "A" tables are published on every working day and contain average exchange rates for a selection of 35 most popular foreign currencies
-- "B" tables are published on every Wednesday that is a working day, and otherwise on the previous day, and contain average exchange rates for 115 less popular foreign currencies
-- "C" tables are published on every working day and contain average buy and sell rates for a selection of 35 most popular foreign currencies
-
-If data is requested for a date on which no table was published (for example, "A" table rates on a Sunday, or "B" table rates on a Thursday), the API will unceremoniously throw up a 404.
-
-This library currently only supports "A" tables and validates the provided dates to make sure the call is valid (i.e. asking for rates published on a working day).
-
-## Date adjustment
-
-Functions that accept a date as an argument will automatically adjust the date backwards to the nearest date for which an "A" table is available, returning the rate that was binding on the originally requested date.
-
-## Supported currencies
-
-```
-THB, USD, AUD, HKD, CAD, NZD, SGD, EUR, HUF, CHF, GBP, UAH, JPY, CZK, DKK, ISK, NOK, SEK, HRK, RON, BGN, TRY, ILS, CLP, PHP, MXN, ZAR, BRL, MYR, RUB, IDR, INR, KRW, CNY, XDR
-```
 
 # Arguments
 
@@ -137,6 +117,27 @@ Returns: `Array` with length equal to `amountOfRecords` (defaults to `10`), cont
 Arguments: [`dateRange`](#dateRange)
 
 Returns: `Array` containing a number of `Objects` representing "A" tables of exchange rates in the requested range of dates, with the same properties as the object returned by [`getCurrentTable`](#fxNbp.tables.getCurrentTable()).
+
+# Notes on the NBP API
+
+The National Bank of Poland publishes three types of exchange rate tables:
+- "A" tables are published on every working day and contain average exchange rates for a selection of 35 popular foreign currencies
+- "B" tables are published on every Wednesday that is a working day, and otherwise on the previous day, and contain average exchange rates for 115 less popular foreign currencies
+- "C" tables are published on every working day and contain average buy and sell rates for a selection of 35 popular foreign currencies
+
+If data is requested for a date on which no table was published (for example, "A" table rates on a Sunday, or "B" table rates on a Thursday), the API will unceremoniously throw up a 404.
+
+This library currently only supports "A" tables and validates the provided dates to make sure the call is valid (i.e. asking for rates published on a working day).
+
+## Date adjustment
+
+Functions that accept a date as an argument will automatically adjust the date backwards to the nearest date for which an "A" table is available, returning the rate that was binding on the originally requested date.
+
+## Supported currencies
+
+```
+THB, USD, AUD, HKD, CAD, NZD, SGD, EUR, HUF, CHF, GBP, UAH, JPY, CZK, DKK, ISK, NOK, SEK, HRK, RON, BGN, TRY, ILS, CLP, PHP, MXN, ZAR, BRL, MYR, RUB, IDR, INR, KRW, CNY, XDR
+```
 
 # License
 
