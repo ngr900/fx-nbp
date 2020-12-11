@@ -13,8 +13,9 @@ const { rates } = require('fx-nbp');
 
 (async () => {
   await rates.getCurrentRate('USD') // 3.663
-  await rates.getRateForDate('USD', '2020-11-23') // 3.7616
-  await rates.getLastRates('USD', '2020-11-23') // 3.7616
+  await rates.getRateForDate('EUR', '2020-11-23') // 4.468
+  await rates.getLastRates('CHF', 10) // (10) [..., { rate: 3.8129, date:... }, ...]
+  await rates.getRatesBetweenDates('RUB', ['2019-02-13', '2019-06-22']) // (89) [...]
 });
 ```
 # Notes on the NBP API
@@ -26,7 +27,7 @@ The National Bank of Poland publishes three types of exchange rate tables:
 
 If data is requested for a date on which no table was published (for example, "A" table rates on a Sunday, or "B" table rates on a Thursday), the API will unceremoniously throw up a 404.
 
-This library currently only supports "A" tables. This library validates the provided dates to make sure the call is valid.
+This library currently only supports "A" tables and validates the provided dates to make sure the call is valid (i.e. asking for rates published on a working day).
 
 ## Date adjustment
 
