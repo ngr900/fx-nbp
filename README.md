@@ -1,6 +1,6 @@
 # fx-nbp
 
-A small library that fetches foreign exchange rates between PLN and various currencies from the National Bank of Poland.
+A small library that fetches exchange rates between PLN and various foreign currencies from the National Bank of Poland.
 
 # Usage
 
@@ -14,6 +14,7 @@ const { rates } = require('fx-nbp');
 (async () => {
   await rates.getCurrentRate('USD') // 3.663
   await rates.getRateForDate('USD', '2020-11-23') // 3.7616
+  await rates.getLastRates('USD', '2020-11-23') // 3.7616
 });
 ```
 # Notes on the NBP API
@@ -41,15 +42,19 @@ THB, USD, AUD, HKD, CAD, NZD, SGD, EUR, HUF, CHF, GBP, UAH, JPY, CZK, DKK, ISK, 
 
 ## `date`
 
-Accepts a valid `Date` object or a valid ISO8601 date string. Will throw a `FXNBPDateError` if the date is not valid.
+Valid `Date` object or valid ISO8601 date `string`. `FXNBPDateError` will be thrown otherwise.
 
-## `dateRange`
+## `dateRange = [startDate, endDate]`
 
-Accepts an `Array` with length `2` containing two [`dates`](#date), representing respectively the start and end of the time range. Will throw a `FXNBPDateError` if either of the dates is in the future, if the end date is earlier than the start date, or if the range is more than 367 days long (it's a limitation of the NBP API).
+`Array` containing two [`dates`](#date), respectively the `startDate` and `endDate` of the date range. The dates may not be set in the future, `endDate` may not be set earlier than `startDate`, and the range may not cover more than 367 days (limit of the NBP API). `FXNBPDateError` will be thrown otherwise.
+
+## `amountOfRecords`
+
+Positive non-zero integer `number`, smaller or equal to 255 (limit of the NBP API). `FXNBPError` will be thrown otherwise.
 
 ## `currencyCode`
 
-Accepts a three letter ISO4217 currency code, case insensitive. Will throw a `FXNBPError` if the code is invalid or if the currency is not supported.
+Accepts a `string` containing a three letter ISO4217 currency code, case insensitive. `FXNBPError` will be thrown if the currency is not supported.
 
 # Module
 
@@ -57,7 +62,7 @@ Accepts a three letter ISO4217 currency code, case insensitive. Will throw a `FX
 
 Arguments: [`date`](#date)
 
-Returns `true` if the provided date is **not** a Saturday, Sunday or a public holiday in Poland (in other words if an "A" table exists for the given date), and `false` if it is.
+Returns `true` if rates can be requested for the provided date (that is, when it was a working day in Poland - not a Saturday, Sunday, or a public holiday), and `false` if they can not.
 
 Throws: `FXNBPDateError` if the provided date is not valid.
 
@@ -69,7 +74,9 @@ Returns: `true` if the currency is supported, `false` if it is not.
 
 ## `fxNbp.getSupportedCurrencies()`
 
-Returns: an array of strings containing three letter ISO4217 currency codes of all currencies supported by the library.
+Arguments: *none*
+
+Returns: `Array` of `strings` containing three letter ISO4217 currency codes of all currencies supported by the library.
 
 # Rates
 
@@ -77,15 +84,58 @@ Returns: an array of strings containing three letter ISO4217 currency codes of a
 
 Arguments: [`currencyCode`](#currencyCode)
 
-Returns a floating point `number` representing the latest exchange value for the requested currency.
+Returns: floating point `number` representing the latest exchange rate for the requested currency.
 
 ## `fxNbp.rates.getRateForDate(currencyCode, date[, adjustDate = true])`
 
-Arguments: [`currencyCode`](#currencyCode), [`date`](#date), `boolean` adjustDate
+Arguments: [`currencyCode`](#currencyCode), [`date`](#date), `boolean` `adjustDate`
 
-Returns a floating point `number` representing the exchange value for the requested currency, on the reqested date. If `adjustDate` is `true`, the date may be changed - see [date adjustment](#date-adjustment).
+Returns: floating point `number` representing the exchange rate for the requested currency on the reqested date. If `adjustDate` is `true`, the date may be changed - see [date adjustment](#date-adjustment).
 
-Throws: if `adjustDate` is `false`, may throw a `FXNBPDateError` if there was no "A" table published on the requested date.
+Throws: `FXNBPDateError` if `adjustDate` is false and the requested date was not a working day in Poland
+
+## `fxNbp.rates.getLastRates(currencyCode[, amountOfRecords = 10])`
+
+Arguments: [`currencyCode`](#currencyCode), [`amountOfRecords`](#amountOfRecords)
+
+Returns: `Array` with length equal to `amountOfRecords` (defaults to `10`), containing a number of latest exchange rate records for the requested currency. Records are returned as plain objects, containing two self explanatory properties - `rate` and `date`.
+
+## `fxNbp.rates.getRatesBetweenDates(currencyCode, dateRange)`
+
+Arguments: [`currencyCode`](#currencyCode), [`dateRange`](#dateRange)
+
+Returns: `Array` containing a number of exchange rate records for the requested currency, in the requested range of dates. Records are returned as plain objects with the same properties as the objects returned by [getLastRates](#fxnbpratesgetlastrates).
+
+# Tables
+
+## `fxNbp.tables.getCurrentTable()`
+
+Arguments: *none*
+
+Returns: `Object` representing the latest "A" table of exchange rates, with the following properties:
+- `number`:  `string` containing the official identification number of the table, ex. `"237/A/NBP/2020"`
+- `date`: `Date` set to the day when the table was published
+- `rates`: `Array` of plain objects containing two self explanatory properties - `rate` and `code`.
+
+## `fxNbp.tables.getTableForDate(date[, adjustDate = true])`
+
+Arguments: [`date`](#date), `boolean` `adjustDate`
+
+Returns: `Object` representing the "A" table of exchange rates on the requested date, containing the same properties as the object returned by [`getCurrentTable`](#fxNbp.tables.getCurrentTable()). If `adjustDate` is false the date may be changed the same way as in [`getRateForDate`](#fxnbpratesgetratefordate) - see [date adjustment](#date-adjustment).
+
+Throws: `FXNBPDateError` if `adjustDate` is false and the requested date was not a working day in Poland
+
+## `fxNbp.tables.getLastTables([, amountOfRecords = 10])`
+
+Arguments: [`amountOfRecords`](#amountOfRecords)
+
+Returns: `Array` with length equal to `amountOfRecords` (defaults to `10`), containing a number of `Objects` representing latest "A" tables of exchange rates, with the same properties as the object returned by [`getCurrentTable`](#fxNbp.tables.getCurrentTable()).
+
+## `fxNbp.tables.getTablesBetweenDates(dateRange)`
+
+Arguments: [`dateRange`](#dateRange)
+
+Returns: `Array` containing a number of `Objects` representing "A" tables of exchange rates in the requested range of dates, with the same properties as the object returned by [`getCurrentTable`](#fxNbp.tables.getCurrentTable()).
 
 # License
 
