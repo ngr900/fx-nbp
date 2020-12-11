@@ -14,7 +14,7 @@ const { rates } = require('fx-nbp');
 (async () => {
   await rates.getCurrentRate('USD') // 3.663
   await rates.getRateForDate('EUR', '2020-11-23') // 4.468
-  await rates.getLastRates('CHF', 10) // (10) [..., { rate: 3.8129, date:... }, ...]
+  await rates.getLastRates('CHF', 10) // (10) [..., { rate: 4.1362, date:... }, ...]
   await rates.getRatesBetweenDates('RUB', ['2019-02-13', '2019-06-22']) // (89) [...]
 });
 ```
