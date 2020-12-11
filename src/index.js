@@ -5,10 +5,15 @@ const {
 } = require('./api/helperApi.js');
 
 const ratesApi = require('./api/ratesApi.js');
+const tablesApi = require('./api/tablesApi.js');
+
+const { FXNBPError, FXNBPDateError } = require('./lib/errors.js');
 
 module.exports = {
-  canRequestRatesForDate,
+	canRequestRatesForDate,
 	isCurrencySupported,
-  getSupportedCurrencies,
-  rates: ratesApi
-}
+	getSupportedCurrencies,
+	rates: ratesApi,
+	tables: tablesApi,
+	errors: { FXNBPError, FXNBPDateError },
+};
