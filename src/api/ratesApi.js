@@ -33,7 +33,7 @@ async function getLastRates(code, amount = 10) {
 	return formMultiRateResponse(data);
 }
 
-async function getRatesBetweenDates(code, startDate, endDate) {
+async function getRatesBetweenDates(code, [startDate, endDate]) {
 	code = validateCurrencyCode(code);
 	[startDate, endDate] = validateDateRange(startDate, endDate);
 	const data = await performCall(`rates/A/${code}/${startDate}/${endDate}`);

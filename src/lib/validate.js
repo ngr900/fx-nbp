@@ -41,7 +41,7 @@ function adjustFXDate(date) {
 	return formFXDate(date);
 }
 
-function validateDateRange(startDate, endDate) {
+function validateDateRange([startDate, endDate]) {
 	startDate = validateDate(startDate);
 	endDate = validateDate(endDate);
 	const today = new Date();

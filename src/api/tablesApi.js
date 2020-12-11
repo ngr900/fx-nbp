@@ -31,7 +31,7 @@ async function getLastTables(amount = 10) {
 	return formMultiTableResponse(data);
 }
 
-async function getTablesBetweenDates(startDate, endDate) {
+async function getTablesBetweenDates([startDate, endDate]) {
 	[startDate, endDate] = validateDateRange(startDate, endDate);
 	const data = await performCall(`tables/A/${startDate}/${endDate}`);
 	return formMultiTableResponse(data);
