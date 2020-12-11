@@ -53,7 +53,7 @@ Accepts a three letter ISO4217 currency code, case insensitive. Will throw a `FX
 
 # Module
 
-## `fxNbp.`**`canRequestRatesForDate`**`(date)`
+## `fxNbp.canRequestRatesForDate(date)`
 
 Arguments: [`date`](#date)
 
@@ -61,25 +61,25 @@ Returns `true` if the provided date is **not** a Saturday, Sunday or a public ho
 
 Throws: `FXNBPDateError` if the provided date is not valid.
 
-## `fxNbp.`**`isCurrencySupported`**`(currencyCode)`
+## `fxNbp.isCurrencySupported(currencyCode)`
 
 Arguments: [`currencyCode`](#currencyCode)
 
 Returns: `true` if the currency is supported, `false` if it is not.
 
-## `fxNbp.`**`getSupportedCurrencies`**`()`
+## `fxNbp.getSupportedCurrencies()`
 
 Returns: an array of strings containing three letter ISO4217 currency codes of all currencies supported by the library.
 
 # Rates
 
-## `fxNbp.`*`rates`*`.`**`getCurrentRate`**`(currencyCode)`
+## `fxNbp.rates.getCurrentRate(currencyCode)`
 
 Arguments: [`currencyCode`](#currencyCode)
 
 Returns a floating point `number` representing the latest exchange value for the requested currency.
 
-## `fxNbp.`*`rates`*`.`**`getRateForDate`**`(currencyCode, date[, adjustDate = true])`
+## `fxNbp.rates.getRateForDate(currencyCode, date[, adjustDate = true])`
 
 Arguments: [`currencyCode`](#currencyCode), [`date`](#date), `boolean` adjustDate
 
