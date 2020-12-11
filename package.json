@@ -1,0 +1,17 @@
+{
+  "name": "fx-nbp",
+  "version": "1.0.0",
+  "description": "get foreign exchange rates from the National Bank of Poland",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "fx"
+  ],
+  "author": "Kamil Szydlowski",
+  "license": "MIT",
+  "dependencies": {
+    "poland-public-holidays": "^1.0.1"
+  }
+}
