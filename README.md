@@ -12,10 +12,29 @@ npm install fx-nbp
 const { rates } = require('fx-nbp');
 
 (async () => {
-  await rates.getCurrentRate('USD') // 3.663
+  
+  // get fx rate for a specific date
+  // accepts dates and date strings
   await rates.getRateForDate('EUR', '2020-11-23') // 4.468
+  await rates.getRateForDate('EUR', new Date(2020, 10, 23)) // 4.468
+
+  // get latest fx rate
+  // currency codes are case insensititve
+  await rates.getCurrentRate('USD') // 3.663
+  await rates.getCurrentRate('usd') // 3.663
+  await rates.getCurrentRate('uSd') // 3.663
+  
+  // get last 10 fx rates
   await rates.getLastRates('CHF', 10) // (10) [..., { rate: 4.1362, date:... }, ...]
+
+  // get fx rates in range
   await rates.getRatesBetweenDates('RUB', ['2019-02-13', '2019-06-22']) // (89) [...]
+
+  // weekends and public holidays get automatically rolled back to the nearest working day
+  const rateOnSunday = await rates.getRateForDate('USD', '2020-12-06')
+  const rateOnFriday = await rates.getRateForDate('USD', '2020-12-04')
+  rateOnSunday === rateOnFriday /// true
+
 });
 ```
 
@@ -138,6 +157,10 @@ Functions that accept a date as an argument will automatically adjust the date b
 ```
 THB, USD, AUD, HKD, CAD, NZD, SGD, EUR, HUF, CHF, GBP, UAH, JPY, CZK, DKK, ISK, NOK, SEK, HRK, RON, BGN, TRY, ILS, CLP, PHP, MXN, ZAR, BRL, MYR, RUB, IDR, INR, KRW, CNY, XDR
 ```
+
+# TODO
+
+Write some tests.
 
 # License
 
