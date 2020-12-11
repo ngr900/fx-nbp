@@ -1,24 +1,17 @@
 const {
-	validateDate,
-	performCall,
-  addDays,
-  formFXDate
-} = require('../lib/helpers.js');
+	validateCurrencyCode,
+	validateFXDate,
+	adjustFXDate,
+	validateDateRange,
+	validateAmountOfRecords,
+} = require('../lib/validate.js');
+
 const {
 	formSingleRateResponse,
 	formMultiRateResponse,
-} = require('../lib/formResponse.js');
+} = require('../lib/response/rates.js');
 
-const { canRequestRatesForDate } = require('./helperApi.js');
-
-const {
-	validateDateRange,
-	validateAmountOfRecords,
-	validateFXDate,
-	validateCurrencyCode,
-} = require('../lib/validate.js');
-
-//
+const { performCall } = require('../lib/core.js');
 
 async function getCurrentRate(code) {
 	code = validateCurrencyCode(code);
@@ -27,12 +20,8 @@ async function getCurrentRate(code) {
 }
 
 async function getRateForDate(code, date, adjustDate = true) {
-	if (adjustDate === true) {
-		date = adjustFXDate(date);
-	}
+	date = adjustDate ? adjustFXDate(date) : validateFXDate(date);
 	code = validateCurrencyCode(code);
-	date = validateFXDate(date);
-	date = formFXDate(date);
 	const data = await performCall(`rates/A/${code}/${date}`);
 	return formSingleRateResponse(data);
 }
@@ -46,22 +35,9 @@ async function getLastRates(code, amount = 10) {
 
 async function getRatesBetweenDates(code, startDate, endDate) {
 	code = validateCurrencyCode(code);
-	startDate = validateDate(startDate);
-	endDate = validateDate(endDate);
-	validateDateRange(startDate, endDate);
-	startDate = formFXDate(startDate);
-	endDate = formFXDate(endDate);
+	[startDate, endDate] = validateDateRange(startDate, endDate);
 	const data = await performCall(`rates/A/${code}/${startDate}/${endDate}`);
 	return formMultiRateResponse(data);
-}
-
-function adjustFXDate(date) {
-	let valid = canRequestRatesForDate(date);
-	while (!valid) {
-		date = addDays(date, -1);
-		valid = canRequestRatesForDate(date);
-	}
-	return date;
 }
 
 module.exports = {

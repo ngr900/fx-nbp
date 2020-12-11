@@ -1,6 +1,5 @@
 const {
 	FXNBPDateError,
-	FXNBPError,
 	throwUnexpectedError,
 } = require('./errors.js');
 
@@ -10,7 +9,8 @@ function validateDate(date) {
 	if (date instanceof Date) {
 		dateObject = date;
 	} else if (typeof date === 'string') {
-		dateObject = new Date(date);
+		const dateString = date[date.length-1] === 'Z' ? date : (date + 'Z');
+		dateObject = new Date(dateString);
 	}
 
 	if (dateObject !== undefined && dateObject.toString() !== 'Invalid Date') {
@@ -38,12 +38,6 @@ function isSameDay(date1, date2) {
 	);
 }
 
-async function fetchJSON(url) {
-	const response = await fetch(url);
-	const json = response.json();
-	return json;
-}
-
 function daysBetween(date1, date2) {
 	if (date1 > date2) {
 		const temp = date1;
@@ -51,15 +45,6 @@ function daysBetween(date1, date2) {
 		date2 = temp;
 	}
 	return Math.round((date2 - date1) / (1000 * 60 * 60 * 24));
-}
-
-function performCall(endpoint) {
-	const url = `http://api.nbp.pl/api/exchangerates/${endpoint}`;
-	try {
-		return fetchJSON(url);
-	} catch (error) {
-		throwUnexpectedError(error);
-	}
 }
 
 function formFXDate(date) {
@@ -71,7 +56,6 @@ module.exports = {
 	addDays,
 	isSameDay,
 	daysBetween,
-	performCall,
 	isNumber,
 	formFXDate
 };
