@@ -1,3 +1,5 @@
+const repoLink = 'https://github.com/ngr900/fx-nbp/issues';
+
 class FXNBPError extends Error {
 	name = 'FXNBPError';
 	constructor(message) {
@@ -13,7 +15,7 @@ class FXNBPDateError extends FXNBPError {
 }
 
 function throwUnexpectedError(error) {
-	console.warn('This error should not happen. Please file an issue.');
+	console.warn(`This error should not happen. Please open an issue at ${repoLink}`);
 	throw error;
 }
 
