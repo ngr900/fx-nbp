@@ -1,7 +1,24 @@
-const { validateDate, isNumber, daysBetween, addDays, formFXDate } = require('./helpers.js');
+const { isNumber, daysBetween, addDays, formFXDate } = require('./helpers.js');
 const { formCurrencyCode, isCurrencySupported } = require('./currency/currency.js');
 const { FXNBPError, FXNBPDateError, throwUnexpectedError } = require('./errors.js');
 const { isHoliday } = require('poland-public-holidays');
+
+function validateDate(date) {
+	let dateObject;
+
+	if (date instanceof Date) {
+		dateObject = date;
+	} else if (typeof date === 'string') {
+		const dateString = date[date.length-1] === 'Z' ? date : (date + 'Z');
+		dateObject = new Date(dateString);
+	}
+
+	if (dateObject !== undefined && dateObject.toString() !== 'Invalid Date') {
+		return dateObject;
+	} else {
+		throw new FXNBPDateError(`Invalid date.`);
+	}
+}
 
 function validateFXDate(date) {
 	date = validateDate(date);
@@ -27,8 +44,15 @@ function adjustFXDate(date) {
 function validateDateRange(startDate, endDate) {
 	startDate = validateDate(startDate);
 	endDate = validateDate(endDate);
+	const today = new Date();
+	if (startDate > endDate) {
+		throw new FXNBPDateError('Requested date range is invalid.');
+	}
+	if (startDate > today || endDate > today) {
+		throw new FXNBPDateError('Requested date range starts or ends in the future.');
+	}
 	if (daysBetween(startDate, endDate) > 367) {
-		throw new FXNBPDateError('Requested range is longer than 367 days.');
+		throw new FXNBPDateError('Requested date range is longer than 367 days.');
 	}
 	return [startDate, endDate].map(date => formFXDate(date));
 }
@@ -36,7 +60,7 @@ function validateDateRange(startDate, endDate) {
 function validateCurrencyCode(code) {
 	code = formCurrencyCode(code);
 	if (!isCurrencySupported(code)) {
-		throw FXNBPError('Currency not supported.');
+		throw new FXNBPError('Currency not supported.');
 	}
 	return code;
 }
@@ -72,6 +96,7 @@ function canRequestRatesForDate(date) {
 }
 
 module.exports = {
+	validateDate,
 	validateDateRange,
 	validateAmountOfRecords,
 	validateFXDate,
