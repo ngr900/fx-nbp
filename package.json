@@ -1,17 +1,33 @@
 {
   "name": "fx-nbp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "get foreign exchange rates from the National Bank of Poland",
-  "main": "index.js",
+  "main": "dist/fx-nbp.js",
   "scripts": {
-    "test": "test"
+    "test": "mocha test/test.js",
+    "build": "webpack --config webpack.config.js"
   },
   "keywords": [
-    "fx"
+    "fx",
+    "poland",
+    "nbp",
+    "narodowy bank polski",
+    "national bank of poland",
+    "currency exchange",
+    "foreign exchange",
+    "currency"
   ],
+  "repository": "https://github.com/ngr900/fx-nbp",
   "author": "Kamil Szydlowski",
   "license": "MIT",
   "dependencies": {
     "poland-public-holidays": "^1.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "mocha": "^8.2.1",
+    "webpack": "^5.10.1",
+    "webpack-cli": "^4.2.0"
   }
 }
