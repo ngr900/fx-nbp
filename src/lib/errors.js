@@ -1,16 +1,16 @@
 const repoLink = 'https://github.com/ngr900/fx-nbp/issues';
 
 class FXNBPError extends Error {
-	name = 'FXNBPError';
 	constructor(message) {
 		super(message);
+		this.name = 'FXNBPError';
 	}
 }
 
 class FXNBPDateError extends FXNBPError {
-	name = 'FXNBPDateError';
 	constructor(message) {
 		super(message);
+		this.name = 'FXNBPDateError';
 	}
 }
 
