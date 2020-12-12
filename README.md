@@ -102,7 +102,7 @@ Returns: `Array` with length equal to `amountOfRecords` (defaults to `10`), cont
 
 ## `fxNbp.rates.getRatesBetweenDates(currencyCode, dateRange)`
 
-Arguments: [`currencyCode`](#currencyCode), [`dateRange`](#dateRange)
+Arguments: [`currencyCode`](#currencyCode), [`dateRange`](#daterange--startdate-enddate)
 
 Returns: `Array` containing a number of exchange rate records for the requested currency, in the requested range of dates. Records are returned as plain objects with the same properties as the objects returned by [getLastRates](#fxnbpratesgetlastrates).
 
@@ -133,7 +133,7 @@ Returns: `Array` with length equal to `amountOfRecords` (defaults to `10`), cont
 
 ## `fxNbp.tables.getTablesBetweenDates(dateRange)`
 
-Arguments: [`dateRange`](#dateRange)
+Arguments: [`dateRange`](#daterange--startdate-enddate)
 
 Returns: `Array` containing a number of `Objects` representing "A" tables of exchange rates in the requested range of dates, with the same properties as the object returned by [`getCurrentTable`](#fxNbp.tables.getCurrentTable()).
 
